@@ -123,6 +123,58 @@ def addTeam() :
     # TODO: Créer une fonction pour ajouter une équipe dans un fichier JSON
 
 
+def editTeam(): 
+    # Ask for user input and stock it in a dictionnary
+    newTeam = {
+        "teamName": "",
+        "teamMembers": [],
+        "teamRank": "",
+        "teamLastMatch": "",
+        "teamNextMatch": ""
+    }
+    print("Modification d'une équipe")
+    questions = [
+        {
+            "type": "input",
+            "message": "Quel est le nom de l'équipe ?",
+            "name": "teamName"
+        },
+        {
+            "type" : "input",
+            "message" : "Quel est le rang de l'équipe ? [\"disc\" si discalifiée]",
+            "name" : "teamRank"
+        },
+        {
+            "type" : "input",
+            "message" : "Quand a été le dernier match de l'équipe ? (JJ/MM/AAAA)",
+            "name" : "teamLastMatch"
+        }, 
+        {
+            "type": "input",
+            "message": "Quand sera le prochain match de l'équipe ? (JJ/MM/AAAA ) [\"none\" si aucun]",
+            "name": "teamNextMatch"
+        }
+    ]
+    answer = prompt(questions)
+    for key, value in answer.items():
+        newTeam[key] = value
+    print("L'équipe a bien été modifiée !")
+    # TODO: Faire une fonction permettant de modifier une équipe dans un fichier JSON
+    teamsActionMenu()
+
+def deleteTeam():
+    # Ask for user input and stock it in a dictionnary
+    team = {
+        "type": "input",
+        "message": "Quel est le nom de l'équipe ?",
+        "name": "teamName"
+    }
+
+    print("Suppression d'une équipe")
+    answer = prompt(team)
+    # TODO: Créer une fonction pour supprimer une équipe dans un fichier JSON avec comme argument le nom de cette dernière
+    teamsActionMenu()
+
 # -------------- PLANNING MENU --------------
 def planningActionMenu():
     displayPlanning()
