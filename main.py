@@ -2,7 +2,7 @@ from InquirerPy import prompt
 from rich.console import Console
 from rich.table import Table
 # Import the display module
-from functions.display import displayWelcomeMenu
+from functions.menus import *
 
 table = Table(title = "People")
 console = Console()
@@ -20,7 +20,7 @@ questions = [
 ]
 
 
-displayWelcomeMenu()
+navigationMenu()
 
 # Setup de la table avec données déjà présentes
 for column in columns:

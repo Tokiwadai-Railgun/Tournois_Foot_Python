@@ -3,25 +3,11 @@ from InquirerPy import prompt
 from rich.console import Console
 from rich.table import Table
 
+# Custom modules
+from functions.menus import *
+
+
 # This module is used to display table containing the necessary informations.
-
-
-# First function: navigationMenu
-def nagivationMenu():
-    navigationMenu = [
-        {"type": "list", "message": "Que voulez-vous faire ?", "name": "navigation", "choices": ["Ajouter une équipe", "Afficher les équipes", "Quitter"]},
-    ]
-    navigationAnswer = prompt(navigationMenu)
-    if navigationAnswer["navigation"] == "Ajouter une équipe":
-        addTeamMenu()
-    elif navigationAnswer["navigation"] == "Afficher les équipes":
-        displayTeammsMenu()
-    elif navigationAnswer["navigation"] == "Quitter":
-        exit()
-
-
-# This function will simply display the menu of the application on launch.
-
 def displayWelcomeMenu():
     # Defining the table
     table = Table()
@@ -36,28 +22,46 @@ def displayWelcomeMenu():
     ''')
     console.print(table)  
 
-    # then we display the nagivation menu
-    nagivationMenu()
-
 # This function is meant to display the list of all teams in the database.
-def displayTeammsMenu():
+def displayTeams():
     table = Table()
     console = Console()
-    columns = ["Rank", "Team Name", "Last Match", "Next Match"]
+    columns = ["Rank", "Nom d'équipe", "Dernier match", "Prochain match"]
     rows = []
     for column in columns:
         table.add_column(column)
-    print("Bienvenue :") # TODO: Add the logo in ASCII art
+
+    # Afficage du titre en ASCII art
+
+    # Affichage du tableau
     console.print(table)  
     # Display the menu options
 
-def addTeamMenu():
+
+
+def displayPlanning():
     table = Table()
     console = Console()
-    columns = ["Rank", "Team Name", "Last Match", "Next Match"]
+    columns = ["Date", "Premère équipe", "Seconde équipe", "Arbitre", "Pronostique" ]
     rows = []
     for column in columns:
         table.add_column(column)
-    print("Bienvenue :") # TODO: Add the logo in ASCII art
-    console.print(table)  
-    # Display the menu options
+
+    # Afficage du titre en ASCII art
+    #
+    # Affichage du tableau
+    console.print(table)
+
+
+def displayMatchHistory():
+    table = Table()
+    console = Console()
+    columns = ["Date", "Premère équipe", "Seconde équipe", "Arbitre", "Pronostique" ]
+    rows = []
+    for column in columns:
+        table.add_column(column)
+
+    # Afficage du titre en ASCII art
+    #
+    # Affichage du tableau
+    console.print(table)
