@@ -2,7 +2,10 @@ from InquirerPy import prompt
 from rich.console import Console
 from rich.table import Table
 # Import the display module
-from functions.menus import *
+from functions.user_selector import login
+from functions.admins.admins_menus import *
+
+login()
 
 table = Table(title = "People")
 console = Console()

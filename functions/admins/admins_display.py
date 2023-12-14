@@ -3,8 +3,6 @@ from InquirerPy import prompt
 from rich.console import Console
 from rich.table import Table
 
-# Custom modules
-from functions.menus import *
 
 
 # This module is used to display table containing the necessary informations.
@@ -56,7 +54,7 @@ def displayPlanning():
 def displayMatchHistory():
     table = Table()
     console = Console()
-    columns = ["Date", "Premère équipe", "Seconde équipe", "Arbitre", "Pronostique" ]
+    columns = ["Date", "Premère équipe", "Seconde équipe", "Arbitre", "Résultat" ]
     rows = []
     for column in columns:
         table.add_column(column)

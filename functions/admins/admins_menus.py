@@ -2,7 +2,7 @@
 from InquirerPy import prompt
 
 # custome modules
-from functions.display import *
+from functions.admins.admins_display import *
 
 # There will be 2 types of menus: 
 # First the nagivation menu, he's alone in this category and will only be used to switch between the other menus.
@@ -35,7 +35,7 @@ def navigationMenu():
         case "Voir le planning":
             planningActionMenu()
         case "Voir les anciens matches":
-            displayMatchHistory()
+            matchHistoryMenu()
         case "Voir le staff":
             print("Staff")
         case "Quitter":
@@ -250,3 +250,76 @@ def matchAdd():
 
     planningActionMenu()
 
+def matchEdit():
+    match = {
+        "matchDate": "",
+        "matchTeam1": "",
+        "matchTeam2": "",
+        "matchArbitre": ""
+    }
+   
+    # Ask for user input and stock it in a dictionnary
+    questions = [
+        {
+            "type": "input",
+            message: "Quand est le match ? (JJ/MM/AAAA)",
+            name: "matchDate"
+        },
+        {
+            "type": "input",
+            message: "quelle est la première équipe ?",
+            name: "matchTeam1"
+        },
+        {
+            "type": "input",
+            message: "quelle est la seconde équipe ?",
+            name: "matchTeam2"
+        },
+        {
+            "type": "input",
+            message: "quelle est la seconde équipe ?",
+            name: "matchArbitre"
+        },
+    ]
+
+    anwser = prompt(questions)
+    for key, value in anwser.items():
+        match[key] = value
+
+    # TODO: Créer une fonction pour modifier un match dans un fichier JSON
+    print("Modification d'un match")
+    planningActionMenu()
+
+def matchDelete():
+    # Ask for user input and stock it in a dictionnary
+    match = {
+        "type": "input",
+        "message": "Quel est le nom du match ?",
+        "name": "matchName"
+    }
+    print("Suppression d'un match")
+    # TODO: Créer une fonction pour supprimer un match dans un fichier JSON avec comme argument le nom de cette dernière
+    answer = prompt(match)
+
+    planningActionMenu()
+
+# -------------- MATCH HISTORY --------------
+def matchHistoryMenu():
+    # Display the menu options
+    actions = [{ 
+        "type": "list", 
+        "message": "Que voulez-vous faire ?", 
+        "name": "action", 
+        "choices": [
+            "Changer de Menu", 
+            "Quitter"
+        ]
+    }]
+
+    displayMatchHistory()
+    response = prompt(actions)
+    match response["action"] :
+        case "Changer de Menu" :
+            navigationMenu()
+        case "Quitter":
+            exit()
