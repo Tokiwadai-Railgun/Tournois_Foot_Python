@@ -63,6 +63,11 @@ def displayMatchHistory():
         table.add_column(column)
 
     # Afficage du titre en ASCII art
-    #
+    with open("datas/matchs.json", "r") as openfile:
+      # Reading from json file
+      json_object = json.load(openfile)
+      for key, value in json_object.items():
+        table.add_row("0", value[0], value[1], str(value[2]))
+
     # Affichage du tableau
-    console.print(table)
+    console.print(table)  

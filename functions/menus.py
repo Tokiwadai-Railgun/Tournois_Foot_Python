@@ -23,7 +23,7 @@ def navigationMenu():
             "name": "navigation", 
             "choices": [
                 "Voir le classement", 
-                "Voir les matches", 
+                "Voir les matchs", 
                 "Voir les équipes", 
                 "Voir les pronostiques", 
                 "Quitter"
@@ -38,8 +38,8 @@ def navigationMenu():
     match navigationAnswer["navigation"] :
         case "Voir les équipes":
             teamsActionMenu()
-        case "Voir le planning":
-            planningActionMenu()
+        case "Voir les matchs":
+            matchHistoryMenu()
         case "Voir les anciens matches":
             matchHistoryMenu()
         case "Voir le staff":
@@ -122,7 +122,6 @@ def addTeam() :
       json.dump(teams, outfile)
 
     print("L'équipe a bien été ajoutée !")
-    time.sleep(0.5)
     teamsActionMenu()
     # TODO: Créer une fonction pour ajouter une équipe dans un fichier JSON
 
@@ -315,6 +314,7 @@ def matchHistoryMenu():
         "message": "Que voulez-vous faire ?", 
         "name": "action", 
         "choices": [
+            "Ajouter un match",
             "Changer de Menu", 
             "Quitter"
         ]
@@ -323,7 +323,57 @@ def matchHistoryMenu():
     displayMatchHistory()
     response = prompt(actions)
     match response["action"] :
-        case "Changer de Menu" :
-            navigationMenu()
-        case "Quitter":
-            exit()
+      case "Ajouter un match" : 
+          addMatch()
+      case "Changer de Menu" :
+          navigationMenu()
+      case "Quitter":
+          exit()
+
+def addMatch():
+  print("Ajout d'une équipe")
+  questions = [
+      {
+          "type": "input",
+          "message": "Quel est le nom de la première équipe ?",
+          "name": "teamName1"
+      },
+      {
+          "type" : "input",
+          "message" : "Quel est ne nom de la deuxième équipe",
+          "name" : "teamName2"
+      },
+      {
+          "type" : "input",
+          "message" : "Quand a lieu de match ?",
+          "name" : "matchDate"
+      }, 
+      {
+          "type" : "input",
+          "message" : "Quand a lieu de match ?",
+          "name" : "score1"
+      }, 
+      {
+          "type" : "input",
+          "message" : "Quand a lieu de match ?",
+          "name" : "score2"
+      }, 
+
+  ]
+
+  answer = prompt(questions)
+
+  with open("datas/matchs.json", 'r') as outfile:
+    teams = json.load(outfile)
+
+    matchValues = []
+    for key, value in answer.items():
+      matchValues.append(value)
+    newTeam = {str(random.randint(1, 999)): matchValues }
+    teams.update(newTeam)
+
+  with open("datas/matchs.json", "w") as outfile:
+    json.dump(teams, outfile)
+
+  print("L'équipe a bien été ajoutée !")
+  matchHistoryMenu()

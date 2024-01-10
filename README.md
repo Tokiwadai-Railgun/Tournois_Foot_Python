@@ -22,15 +22,12 @@ Il contient donc les menus suivants :
 
 ### 3 - Menu Matchs : Affiche les matchs (daily, all)
 #### daily 
-* [ ] Afficher les matchs de la journée -> id du match , Les deux équipes , date , heure , vainceurs et arbitres attitrés .
+* [X] Afficher les matchs de la journée -> id du match , Les deux équipes , date , heure , vainceurs et arbitres attitrés .
 * [ ] saisir les résultats ->  choisir le match par son id, équipes , 
-* [ ] Afficher les matches des autres jours dans un autre tableau
 
 ### 4 - Menu équipes
-* [ ] Affiche les différentes équipes -> Nom, score
-* [ ] Affiche les différentes équipes 
-* [ ] Saisir une nouvelle équipe
-* [ ] Modifier une équipe
+* [X] Affiche les différentes équipes 
+* [X] Saisir une nouvelle équipe
 
 ### 5 - Menu pronostiques : Permet d'afficher les pronostiques du tournois
 *Permet aux utilisateurs de voter pour une équipe dans le top 3*\
