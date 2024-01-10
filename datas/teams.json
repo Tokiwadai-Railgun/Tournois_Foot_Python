@@ -1,18 +1,7 @@
 {
-  "firstTeam": {
-    "teamName": "Team 1",
-    "teamPlayers": [
-      {
-        "name": "John Doe",
-        "playerNumber": 1
-      }
-    ],
-    "teamStaff": [
-      {
-        "name": "Jane Doe",
-        "staffRole": "Coach"
-      }
-    ],
-    "teamScore": 0
-  }
+    "teamName": "a",
+    "teamMembers": [],
+    "teamRank": "aa",
+    "teamLastMatch": "",
+    "teamNextMatch": "a"
 }

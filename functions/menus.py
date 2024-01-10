@@ -1,8 +1,10 @@
 # Importing modules
 from InquirerPy import prompt
+import json
+
 
 # custome modules
-from functions.admins.admins_display import *
+from functions.display import *
 
 # There will be 2 types of menus: 
 # First the nagivation menu, he's alone in this category and will only be used to switch between the other menus.
@@ -16,10 +18,10 @@ def navigationMenu():
             "message": "Que voulez-vous faire ?", 
             "name": "navigation", 
             "choices": [
+                "Voir le classement", 
+                "Voir les matches", 
                 "Voir les équipes", 
-                "Voir le planning", 
-                "Voir les anciens matches", 
-                "Voir le staff", 
+                "Voir les pronostiques", 
                 "Quitter"
             ]
         },
@@ -117,6 +119,9 @@ def addTeam() :
     answer = prompt(questions)
     for key, value in answer.items():
         newTeam[key] = value
+    jsonVer = json.dumps(newTeam, indent=4)
+    with open("datas/teams.json", "w") as outfile:
+      outfile.write(jsonVer)
 
     print("L'équipe a bien été ajoutée !")
     teamsActionMenu()
