@@ -85,7 +85,7 @@ def displayRank():
       # Afficher par ordre croissant
       donnees_tries = dict(sorted(team_json_object.items(), key=lambda item: int(item[1][2]), reverse = True))
       i = 1
-      for key, value in donnees_tries.items():
+      for _, value in donnees_tries.items():
         table.add_row(str(i), value[0], value[2])
         i += 1
   
@@ -108,3 +108,23 @@ def calculatePoints():
         else :
           teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 1 )
           teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 1 )
+
+# Calculate pronostics
+def displayProno():
+  table = Table()
+  console = Console()
+  columns = ["Nom de l'équipe", "Nombre de votes"]
+  for column in columns:
+    table.add_column(column)
+  
+
+
+  console.print(table)
+  with open('datas/teams.json', 'r') as teamsJson:
+    team_json_object = json.load(teamsJson)
+    # Afficher par ordre croissant
+    donnees_tries = dict(sorted(team_json_object.items(), key=lambda item: int(item[1][2])))
+    for _, value in donnees_tries.items():
+        table.add_row(value[0], value[3])
+
+  console.print(table)

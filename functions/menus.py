@@ -43,8 +43,8 @@ def navigationMenu():
             matchHistoryMenu()
         case "Voir le classement":
           teamRankMenu()
-        case "Voir le staff":
-            print("Staff")
+        case "Voir les pronostiques":
+          pronoMenu()
         case "Quitter":
             exit()
 
@@ -102,7 +102,7 @@ def addTeam() :
             "type" : "input",
             "message" : "combien de points a l'équipe ?",
             "name" : "teamRank"
-        }
+        },
     ]
 
     answer = prompt(questions)
@@ -112,7 +112,8 @@ def addTeam() :
       teamValues = []
       for key, value in answer.items():
         teamValues.append(value)
-      newTeam = {str(random.randint(1, 999)): teamValues }
+      teamValues.append("0") # Correspond au nombre de votes pour les pronostiques, vide par défaut
+      newTeam = {answer["teamName"] : teamValues }
       teams.update(newTeam)
 
     with open("datas/teams.json", "w") as outfile:
@@ -330,3 +331,64 @@ def teamRankMenu():
         navigationMenu()
     case "Quitter":
         exit()
+
+
+# Pronostics
+def pronoMenu():
+  actions = [{ 
+    "type": "list", 
+    "message": "Que voulez-vous faire ?", 
+    "name": "action", 
+    "choices": [
+        "Voter",
+        "Changer de Menu", 
+        "Quitter"
+    ]
+  }]
+
+  displayProno()
+  response = prompt(actions)
+  match response["action"] :
+    case "Voter":
+      vote()
+    case "Changer de Menu" :
+        navigationMenu()
+    case "Quitter":
+        exit()
+
+def vote():
+
+  with open("datas/teams.json", 'r') as teamsJson:
+    teams_json_object = json.load(teamsJson)
+
+    teamsIds = []
+    for key, _ in teams_json_object.items():
+      teamsIds.append(key)
+
+    questions = [
+      {
+        "type": "fuzzy",
+        "message" : "Sélectionner la première équipe",
+        "choices": teamsIds 
+      },
+      {
+        "type": "fuzzy",
+        "message" : "Sélectionner la deuxième équipe",
+        "choices": teamsIds 
+      },
+      {
+        "type": "fuzzy",
+        "message" : "Sélectionner la troisième équipe",
+        "choices": teamsIds 
+      },
+    ]
+
+    votedTeams = prompt(questions)
+
+    for _, value in votedTeams.items():
+      teams_json_object[value][3] = str(int(teams_json_object[value][3]) + 1)
+
+    with open("datas/teams.json", "w") as teamsWrittingJson:
+      json.dump(teams_json_object, teamsWrittingJson)
+
+  pronoMenu()
