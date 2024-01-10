@@ -41,8 +41,8 @@ def navigationMenu():
             teamsActionMenu()
         case "Voir les matchs":
             matchHistoryMenu()
-        case "Voir les anciens matches":
-            matchHistoryMenu()
+        case "Voir le classement":
+          teamRankMenu()
         case "Voir le staff":
             print("Staff")
         case "Quitter":
@@ -175,134 +175,6 @@ def deleteTeam():
     # TODO: Créer une fonction pour supprimer une équipe dans un fichier JSON avec comme argument le nom de cette dernière
     teamsActionMenu()
 
-# -------------- PLANNING MENU --------------
-def planningActionMenu():
-    displayPlanning()
-    # Display the menu options
-
-    actions = [{ 
-        "type": "list", 
-        "message": "Que voulez-vous faire ?", 
-        "name": "action", 
-        "choices": [
-            "Ajouter un match", 
-            "Modifier un match", 
-            "Supprimer un match", 
-            "Changer de Menu", 
-            "Quitter"
-        ]
-    }]
-    response = prompt(actions)
-
-    match response["action"] :
-        case "Ajouter un match":
-            matchAdd()
-        case "Modifier un match":
-            print("Modification d'un match")
-            # Créer une fonction pour modifier un match dans un fichier JSON
-        case "Supprimer un match":
-            print("Suppression d'un match")
-            # Créer une fonction pour supprimer un match dans un fichier JSON
-        case "Changer de Menu" :
-            navigationMenu()
-
-
-def matchAdd():
-    # Ask for user input and stock it in a dictionnary
-    newMatch = {
-        "matchDate": "",
-        "matchTeam1": "",
-        "matchTeam2": "",
-        "matchArbitre": ""
-    }
-    print("Ajout d'un match")
-
-    questions = [
-        {
-            "type": "input",
-            "message": "Quand est le match ? (JJ/MM/AAAA)",
-            "name": "matchDate"
-        },
-        {
-            "type": "input",
-            "message": "Quelle est la première équipe ?",
-            "name": "matchTeam1"
-        },
-        {
-            "type": "input",
-            "message": "Quelle est la deuxième équipe ?",
-            "name": "matchTeam2"
-        },
-        {
-            "type": "input",
-            "message": "Quel est le nom de l'arbitre ?",
-            "name": "matchArbitre"
-        },
-    ]
-    
-    answers = prompt(questions)
-
-    for key, value in answers.items():
-        newMatch[key] = value
-
-    # TODO: Créer une fonction pour ajouter un match dans un fichier JSON
-    print("Le match a bien été ajouté !")
-
-    planningActionMenu()
-
-def matchEdit():
-    match = {
-        "matchDate": "",
-        "matchTeam1": "",
-        "matchTeam2": "",
-        "matchArbitre": ""
-    }
-   
-    # Ask for user input and stock it in a dictionnary
-    questions = [
-        {
-            "type": "input",
-            message: "Quand est le match ? (JJ/MM/AAAA)",
-            name: "matchDate"
-        },
-        {
-            "type": "input",
-            message: "quelle est la première équipe ?",
-            name: "matchTeam1"
-        },
-        {
-            "type": "input",
-            message: "quelle est la seconde équipe ?",
-            name: "matchTeam2"
-        },
-        {
-            "type": "input",
-            message: "quelle est la seconde équipe ?",
-            name: "matchArbitre"
-        },
-    ]
-
-    anwser = prompt(questions)
-    for key, value in anwser.items():
-        match[key] = value
-
-    # TODO: Créer une fonction pour modifier un match dans un fichier JSON
-    print("Modification d'un match")
-    planningActionMenu()
-
-def matchDelete():
-    # Ask for user input and stock it in a dictionnary
-    match = {
-        "type": "input",
-        "message": "Quel est le nom du match ?",
-        "name": "matchName"
-    }
-    print("Suppression d'un match")
-    # TODO: Créer une fonction pour supprimer un match dans un fichier JSON avec comme argument le nom de cette dernière
-    answer = prompt(match)
-
-    planningActionMenu()
-
 # -------------- MATCH HISTORY --------------
 def matchHistoryMenu():
     # Display the menu options
@@ -334,13 +206,13 @@ def addMatch():
   print("Ajout d'une équipe")
   questions = [
       {
-          "type": "input",
-          "message": "Quel est le nom de la première équipe ?",
+          "type": "number",
+          "message": "Quel est l'id de la première équipe ?",
           "name": "teamName1"
       },
       {
-          "type" : "input",
-          "message" : "Quel est ne nom de la deuxième équipe",
+          "type" : "number",
+          "message" : "Quel est l'id de la deuxième équipe",
           "name" : "teamName2"
       },
       {
@@ -438,4 +310,23 @@ def editMatchScore():
       json.dump(newMatchHistory, matchJson)
 
   matchHistoryMenu()
-      
+
+# ------------------- Classement Menu ---------------------
+def teamRankMenu():
+  actions = [{ 
+      "type": "list", 
+      "message": "Que voulez-vous faire ?", 
+      "name": "action", 
+      "choices": [
+          "Changer de Menu", 
+          "Quitter"
+      ]
+  }]
+  
+  displayRank()
+  response = prompt(actions)
+  match response["action"] :
+    case "Changer de Menu" :
+        navigationMenu()
+    case "Quitter":
+        exit()

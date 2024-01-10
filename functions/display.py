@@ -55,18 +55,56 @@ def displayPlanning():
 
 
 def displayMatchHistory():
-    table = Table()
-    console = Console()
-    columns = ["ID du match", "Date", "Premère équipe", "Seconde équipe", "Arbitre", "Score de la première équipe", "Score de la seconde équipe" ]
-    for column in columns:
-        table.add_column(column)
+  table = Table()
+  console = Console()
+  columns = ["ID du match", "Date", "Premère équipe", "Seconde équipe", "Arbitre", "Score de la première équipe", "Score de la seconde équipe" ]
+  for column in columns:
+      table.add_column(column)
 
-    # Afficage du titre en ASCII art
-    with open("datas/matchs.json", "r") as openfile:
+  # Afficage du titre en ASCII art
+  with open("datas/matchs.json", "r") as openfile:
+    # Reading from json file
+    json_object = json.load(openfile)
+    for key, value in json_object.items():
+      table.add_row(key, value[2], value[0], value[1], value[5], value[3], value[4])
+
+  # Affichage du tableau
+  console.print(table)
+
+
+def displayRank():
+  table = Table()
+  console = Console()
+  columns = ["Classement", "Nom de l'équipe", "Nombre de points"]
+  for column in columns:
+    table.add_column(column)
+    
+    with open('datas/teams.json', 'r') as teamsJson:
+      team_json_object = json.load(teamsJson)
+      calculatePoints()
+      # Afficher par ordre croissant
+      donnees_tries = dict(sorted(team_json_object.items(), key=lambda item: int(item[1][2]), reverse = True))
+      i = 1
+      for key, value in donnees_tries.items():
+        table.add_row(str(i), value[0], value[2])
+        i += 1
+  
+          
+
+  # Affichage du tableau
+  console.print(table)
+
+def calculatePoints():
+  with open("datas/matchs.json", "r") as matchsJson:
+    with open('datas/teams.json', 'r') as teamsJson:
       # Reading from json file
-      json_object = json.load(openfile)
-      for key, value in json_object.items():
-        table.add_row(key, value[2], value[0], value[1], value[5], value[3], value[4])
-
-    # Affichage du tableau
-    console.print(table)
+      matchs_json_object = json.load(matchsJson)
+      teams_json_object = json.load(teamsJson)
+      for key, value in matchs_json_object.items():
+        if int(value[3]) == max(value[3], value[4]):
+          teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 3 )
+        elif int(value[4]) == max(value[3], value[4]):
+          teams_json_object[value[1]][2] = str( int(teams_json_object[value[1]][2]) + 3 )
+        else :
+          teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 1 )
+          teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 1 )

@@ -1,12 +1,6 @@
-import mysql.connector
-connevtion_params = {
-  'host' : "localhost",
-  'user': "root",
-  "password" : "Walendithas",
-  "database" : "tournoi"
-}
+donnees = {"254": ["PSG", "Paris", "1"], "468": ["OM", "Marseilles", "10"], "410": ["OL", "Lyon", "0"]}
 
-with mysql.connector.connect(**connevtion_params) as db:
-  with db.cursor() as c:
-    c.execute("INSERT INTO equipe (nom, ville, nb_points) VALUES ("B", "B", 0)")
-    db.commit()
+# Tri du dictionnaire par points (troisième élément de chaque liste)
+donnees_tries = dict(sorted(donnees.items(), key=lambda item: int(item[1][2]), reverse = True))
+
+print(donnees_tries)
