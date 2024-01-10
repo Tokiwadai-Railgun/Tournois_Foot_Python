@@ -57,8 +57,7 @@ def displayPlanning():
 def displayMatchHistory():
     table = Table()
     console = Console()
-    columns = ["Date", "Premère équipe", "Seconde équipe", "Arbitre", "Résultat" ]
-    rows = []
+    columns = ["ID du match", "Date", "Premère équipe", "Seconde équipe", "Arbitre", "Score de la première équipe", "Score de la seconde équipe" ]
     for column in columns:
         table.add_column(column)
 
@@ -67,7 +66,7 @@ def displayMatchHistory():
       # Reading from json file
       json_object = json.load(openfile)
       for key, value in json_object.items():
-        table.add_row("0", value[0], value[1], str(value[2]))
+        table.add_row(key, value[2], value[0], value[1], value[5], value[3], value[4])
 
     # Affichage du tableau
-    console.print(table)  
+    console.print(table)

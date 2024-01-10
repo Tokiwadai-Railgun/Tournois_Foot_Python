@@ -1,5 +1,6 @@
 # Importing modules
 from InquirerPy import prompt
+from InquirerPy.validator import EmptyInputValidator
 import time
 import json
 import random
@@ -61,7 +62,6 @@ def teamsActionMenu():
             "choices": [
                 "Ajouter une équipe", 
                 "Modifier une équipe",
-                "Supprimer une équipe",
                 "Changer de Menu",
                 "Quitter"
             ]
@@ -78,9 +78,6 @@ def teamsActionMenu():
         case "Modifier une équipe":
             print("Modification d'une équipe")
             # Créer une fonction pour modifier une équipe dans un fichier JSON
-        case "Supprimer une équipe":
-            print("Suppression d'une équipe")
-            # Créer une fonction pour supprimer une équipe dans un fichier JSON
         case "Changer de Menu" :
             navigationMenu()
         case "Quitter":
@@ -315,6 +312,7 @@ def matchHistoryMenu():
         "name": "action", 
         "choices": [
             "Ajouter un match",
+            "Mettre à jours les scores d'un match",
             "Changer de Menu", 
             "Quitter"
         ]
@@ -325,6 +323,8 @@ def matchHistoryMenu():
     match response["action"] :
       case "Ajouter un match" : 
           addMatch()
+      case "Mettre à jours les scores d'un match":
+        editMatchScore()
       case "Changer de Menu" :
           navigationMenu()
       case "Quitter":
@@ -349,31 +349,93 @@ def addMatch():
           "name" : "matchDate"
       }, 
       {
-          "type" : "input",
-          "message" : "Quand a lieu de match ?",
+          "type" : "number",
+          "message" : "Quel est le score de la première équipe ?",
+          "min_allowed": 0,
+          "validate": EmptyInputValidator(),
           "name" : "score1"
       }, 
       {
-          "type" : "input",
-          "message" : "Quand a lieu de match ?",
+          "type" : "number",
+          "message" : "Quel est le score de la deuxième équipe ?",
+          "min_allowed": 0,
+          "validate": EmptyInputValidator(),
           "name" : "score2"
       }, 
+      {
+          "type" : "input",
+          "message" : "Quel est le nom de l'arbitre ?",
+          "name" : "arbitre"
+      }, 
+      
 
   ]
 
   answer = prompt(questions)
 
   with open("datas/matchs.json", 'r') as outfile:
-    teams = json.load(outfile)
+    matchs = json.load(outfile)
 
     matchValues = []
     for key, value in answer.items():
       matchValues.append(value)
-    newTeam = {str(random.randint(1, 999)): matchValues }
-    teams.update(newTeam)
+    newMatch = {str(random.randint(1, 999)): matchValues }
+    matchs.update(newMatch)
 
   with open("datas/matchs.json", "w") as outfile:
-    json.dump(teams, outfile)
+    json.dump(matchs, outfile)
 
   print("L'équipe a bien été ajoutée !")
   matchHistoryMenu()
+
+
+def editMatchScore():
+  # Prompt the user to choose a match with it ID
+  matchsIds = []
+  with open("datas/matchs.json", 'r') as matchJson:
+    matchs = json.load(matchJson)
+    for key, value in matchs.items() :
+      matchsIds.append(key) # On ajoute l'Id du match dans la table pour les afficher par la suite
+
+
+  questions = [
+    {
+      "type": "fuzzy",
+      "message" : "Sélectionner un match",
+      "choices": matchsIds 
+    }
+  ]
+
+  editingMatch = prompt(questions)
+
+  # Now we prompt the score of the two new teams
+  scoreQuestions = [
+    {
+        "type" : "number",
+        "message" : "Quel est le score de la première équipe ?",
+        "min_allowed": 0,
+        "validate": EmptyInputValidator(),
+        "name" : "score1"
+    }, 
+    {
+        "type" : "number",
+        "message" : "Quel est le score de la seconde équipe ?",
+        "min_allowed": 0,
+        "validate": EmptyInputValidator(),
+        "name" : "score2"
+    }, 
+  ]
+  newScore = prompt(scoreQuestions)
+
+  newMatchHistory = {}
+  for key, value in newScore.items():
+    with open("datas/matchs.json", 'r') as matchJson:
+      newMatchHistory = json.load(matchJson)
+      newMatchHistory[editingMatch[0]][3] = newScore["score1"]
+      newMatchHistory[editingMatch[0]][4] = newScore["score2"]
+
+    with open("datas/matchs.json", 'w') as matchJson:
+      json.dump(newMatchHistory, matchJson)
+
+  matchHistoryMenu()
+      
