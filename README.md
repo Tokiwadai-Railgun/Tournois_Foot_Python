@@ -23,14 +23,17 @@ Il contient donc les menus suivants :
 #### daily 
 * [ ] Afficher les matchs de la journée -> id du match , Les deux équipes , date , heure , vainceurs et arbitres attitrés .
 * [ ] saisir les résultats ->  choisir le match par son id, équipes , 
-* [ ]
-### 4 - Menu Staff : Permet de créer des membres du staff, de les modifier, de les supprimer et d'afficher les membres du staff par équipe
-1 : Ajout d'un membre du staff : On renseigne le nom, le prénom, la date de naissance, le poste et l'équipe
-2 : Modification d'un membre du staff : On peut modifier le nom, le prénom, la date de naissance, le poste et l'équipe
+* [ ] Afficher les matches des autres jours dans un autre tableau
 
-### 5 - Menu matchs : Permet de créer des matchs, de les modifier, de les supprimer et d'afficher les matchs par équipe
-1 : Ajout d'un match : On renseigne les équipes, la date, le stade et les arbitres
-2 : Modification d'un match, on peut modifier les équipes, la date, le stade et les arbitres
-3 : Ajout du résultat d'un match : On renseigne le score et le gagnant, cette page affiche automatiquement les matchs passés sans résultats.
+### 4 - Menu équipes
+* [ ] Affiche les différentes équipes -> Nom, score
+* [ ] Affiche les différentes équipes 
+* [ ] Saisir une nouvelle équipe
+* [ ] Modifier une équipe
+
+### 5 - Menu pronostiques : Permet d'afficher les pronostiques du tournois
+*Permet aux utilisateurs de voter pour une équipe dans le top 3*\
+* [ ] Affiche le podium avec le nombre de vote pour tel équipe
+* [ ] Voter pour une équipe 
 
 /!\ Chaque Menu affiche en dessous un menu de navgation pour se balader entre les différents menus. Il doit donc s'adapter à chaque menu pour n'afficher que les menus disponnible ou signaler sur quel menu on se trouve. (à voir si on peut pas mettre d'une certains couleur un élément du menu où simplement le différencier avec un caractère en plus)
