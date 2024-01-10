@@ -5,7 +5,6 @@ from rich.table import Table
 import json
 
 
-
 # This module is used to display table containing the necessary informations.
 def displayWelcomeMenu():
     # Defining the table
@@ -22,18 +21,18 @@ def displayWelcomeMenu():
 def displayTeams():
     table = Table()
     console = Console()
-    columns = ["Rank", "Nom d'équipe", "Dernier match", "Prochain match"]
+    columns = ["Rank", "Nom d'équipe", "Ville", "Nombre de points"]
     rows = []
     
     for column in columns:
         table.add_column(column)
 
     # Afficage du titre en ASCII art
-    with open("datas/teams.json", 'r') as openfile :
+    with open("datas/teams.json", "r") as openfile:
+      # Reading from json file
       json_object = json.load(openfile)
       for key, value in json_object.items():
-        print(value)
-      print(json_object)
+        table.add_row("0", value[0], value[1], str(value[2]))
 
     # Affichage du tableau
     console.print(table)  

@@ -4,16 +4,17 @@
 
 ## Plugins utilisés
 1 - InquirerPy(https://pypi.org/project/inquirerpy/) : pour les menus et les questions
-2 - rich (https://pypi.org/project/rich/) : pour l'affichage des tableaux
+2 - rich (https://pypi.org/project/rich/) : pour l'affichage des tableaux \
+2 - json pour stocker les données dans des fichiers et les partager entre les fonctions
 
 ## Fonctionnalités
 Le programme permet de créer un planpour les matchs de foots à venir.
 Il contient donc les menus suivants :
 ### 1 - Menu principal : Affiche le logo de l'application en ASCII,
-* [ ] Affiche Classement
-* [ ] Affiche le menu matchs 
-* [ ] Affiche le menu équipes
-* [ ] Affiche les pronostiques 
+* [X] Affiche le menu Classement
+* [X] Affiche le menu matchs 
+* [X] Affiche le menu équipes
+* [X] Affiche le menu pronostiques 
 
 ### 2 - Menu Classement : Voir les points des équipes actuelles 
 *3points en cas de victoire , 1 points en cas de match nul et 0 en cas de défaite*\

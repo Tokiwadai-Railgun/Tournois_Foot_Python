@@ -1,7 +1,11 @@
 # Importing modules
 from InquirerPy import prompt
+import time
 import json
+import random
 
+
+teamms = { "0" : ["nom", "ville", 0]}
 
 # custome modules
 from functions.display import *
@@ -85,13 +89,6 @@ def teamsActionMenu():
 
 def addTeam() : 
     # Ask for user input and stock it in a dictionnary
-    newTeam = {
-        "teamName": "",
-        "teamMembers": [],
-        "teamRank": "",
-        "teamLastMatch": "",
-        "teamNextMatch": ""
-    }
     print("Ajout d'une équipe")
     questions = [
         {
@@ -101,29 +98,31 @@ def addTeam() :
         },
         {
             "type" : "input",
-            "message" : "Quel est le rang de l'équipe ?",
-            "name" : "teamRank"
+            "message" : "d'ou viens l'équipe",
+            "name" : "teamCity"
         },
         {
             "type" : "input",
-            "message" : "Quand a été le dernier match de l'équipe ? (JJ/MM/AAAA)",
-            "name" : "teamLastMatch"
-        }, 
-        {
-            "type": "input",
-            "message": "Quand sera le prochain match de l'équipe ? (JJ/MM/AAAA)",
-            "name": "teamNextMatch"
+            "message" : "combien de points a l'équipe ?",
+            "name" : "teamRank"
         }
     ]
 
     answer = prompt(questions)
-    for key, value in answer.items():
-        newTeam[key] = value
-    jsonVer = json.dumps(newTeam, indent=4)
+    with open("datas/teams.json", 'r') as outfile:
+      teams = json.load(outfile)
+
+      teamValues = []
+      for key, value in answer.items():
+        teamValues.append(value)
+      newTeam = {str(random.randint(1, 999)): teamValues }
+      teams.update(newTeam)
+
     with open("datas/teams.json", "w") as outfile:
-      outfile.write(jsonVer)
+      json.dump(teams, outfile)
 
     print("L'équipe a bien été ajoutée !")
+    time.sleep(0.5)
     teamsActionMenu()
     # TODO: Créer une fonction pour ajouter une équipe dans un fichier JSON
 
