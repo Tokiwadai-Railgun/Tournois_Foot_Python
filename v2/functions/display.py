@@ -48,22 +48,6 @@ def displayTeams():
     console.print(table)  
     # Display the menu options
 
-
-
-def displayPlanning():
-    table = Table()
-    console = Console()
-    columns = ["Date", "Premère équipe", "Seconde équipe", "Arbitre", "Pronostique" ]
-    rows = []
-    for column in columns:
-        table.add_column(column)
-
-    # Afficage du titre en ASCII art
-    #
-    # Affichage du tableau
-    console.print(table)
-
-
 def displayMatchHistory():
   table = Table()
   console = Console()
@@ -71,13 +55,24 @@ def displayMatchHistory():
   for column in columns:
       table.add_column(column)
 
-  # Afficage du titre en ASCII art
-  with open("datas/matchs.json", "r") as openfile:
-    # Reading from json file
-    json_object = json.load(openfile)
-    for key, value in json_object.items():
-      table.add_row(key, value[2], value[0], value[1], value[5], value[3], value[4])
 
+  # Store in the Database
+  with mysql.connector.connect(**connexion_params) as db:
+    with db.cursor() as c:
+      c.execute("SELECT * FROM matchs;")
+      matchs = c.fetchall() 
+      for match in matchs:
+        console.log(match)
+        # Get the two team names
+        c.execute(f"SELECT name FROM equipe WHERE idEqp = '{match[1]}'")
+        firstTeamName = c.fetchall()[0][0]
+        c.execute(f"SELECT name FROM equipe WHERE idEqp = '{match[2]}'")
+        secondTeamName = c.fetchall()[0][0]
+
+        c.execute(f"SELECT nom FROM arbitre WHERE idArb = '{match[8]}'")
+        arbitreName = c.fetchall()[0][0]
+        table.add_row(str(match[0]), str(match[3]), str(firstTeamName), str(secondTeamName), str(arbitreName), str(match[4]), str(match[5]))
+      
   # Affichage du tableau
   console.print(table)
 
@@ -88,39 +83,57 @@ def displayRank():
   columns = ["Classement", "Nom de l'équipe", "Nombre de points"]
   for column in columns:
     table.add_column(column)
-   
-    
-    # Changing JSON to Mysql
-    with open('datas/teams.json', 'r') as teamsJson:
-      team_json_object = json.load(teamsJson)
-      calculatePoints()
-      # Afficher par ordre croissant
-      donnees_tries = dict(sorted(team_json_object.items(), key=lambda item: int(item[1][2]), reverse = True))
+  calculatePoints() 
+
+  # Now we calculate the rank of each teams
+  with mysql.connector.connect(**connexion_params) as db:
+    with db.cursor() as c:
+      c.execute("SELECT name, nb_points FROM equipe")
+      result = c.fetchall()
+      # Sorting the data based on nb_points
+      sorted_data = sorted(result, key=lambda x: x[1], reverse=True)
+
+      # Creating a dictionary with team names as keys and nb_points as values
+      donnees_tries = {team[0]: team[1] for team in sorted_data}
+
       i = 1
-      for _, value in donnees_tries.items():
-        table.add_row(str(i), value[0], value[2])
-        i += 1
-  
-          
+      for name, score in donnees_tries.items():
+        table.add_row(str(i), name, str(score))
+        i+=1
 
   # Affichage du tableau
   console.print(table)
 
 def calculatePoints():
-  with open("datas/matchs.json", "r") as matchsJson:
-    with open('datas/teams.json', 'r') as teamsJson:
-      # Reading from json file
-      matchs_json_object = json.load(matchsJson)
-      teams_json_object = json.load(teamsJson)
-      for key, value in matchs_json_object.items():
-        if int(value[3]) == max(value[3], value[4]):
-          teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 3 )
-        elif int(value[4]) == max(value[3], value[4]):
-          teams_json_object[value[1]][2] = str( int(teams_json_object[value[1]][2]) + 3 )
-        else :
-          teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 1 )
-          teams_json_object[value[0]][2] = str( int(teams_json_object[value[0]][2]) + 1 )
+  # We need to get throught each match and add a point to each teams on a win
+  with mysql.connector.connect(**connexion_params) as db : 
+    with db.cursor() as c:
+      # First we set all values to 0 
+      c.execute("UPDATE equipe SET nb_points = 0")
 
+      # Then we find the winner of each match and add 3 to the number of points
+      c.execute("SELECT idEqp1, idEqp2, score1, score2 FROM matchs")
+      matchResults = c.fetchall()
+      for matchResult in matchResults :
+        firstTeamId = matchResult[0]
+        firstTeamScore = matchResult[2]
+        secondTeamId = matchResult[1]
+        secondTeamScore = matchResult[3]
+
+        if (firstTeamScore > secondTeamScore):
+          print("Adding points to first team")
+          c.execute(f"UPDATE equipe SET nb_points = nb_points + 3 WHERE idEqp = {firstTeamId}")
+        elif (secondTeamScore > firstTeamScore):
+          print("Adding points to second team")
+          c.execute(f"UPDATE equipe SET nb_points = nb_points + 3 WHERE idEqp = {secondTeamId}")
+        else:
+          print("Adding points to booth teams")
+          c.execute(f"UPDATE equipe SET nb_points = nb_points + 1 WHERE idEqp = {secondTeamId}")
+          c.execute(f"UPDATE equipe SET nb_points = nb_points + 1 WHERE idEqp = {firstTeamId}")
+
+        # Now we calculate the rank for each teams
+
+      db.commit()
 # Calculate pronostics
 def displayProno():
   table = Table()
@@ -128,15 +141,14 @@ def displayProno():
   columns = ["Nom de l'équipe", "Nombre de votes"]
   for column in columns:
     table.add_column(column)
-  
 
-
-  console.print(table)
-  with open('datas/teams.json', 'r') as teamsJson:
-    team_json_object = json.load(teamsJson)
-    # Afficher par ordre croissant
-    donnees_tries = dict(sorted(team_json_object.items(), key=lambda item: int(item[1][2])))
-    for _, value in donnees_tries.items():
-        table.add_row(value[0], value[3])
-
-  console.print(table)
+  with mysql.connector.connect(**connexion_params) as db:
+    with db.cursor() as c:
+      c.execute("SELECT name, teamRank from equipe")
+      teamsRanks = c.fetchall()
+      # get all in a single array instead of tuple
+      donnees_tries = dict(sorted(teamsRanks, key=lambda item: item[1]))
+      print(donnees_tries)
+      for key, value in donnees_tries.items():
+          table.add_row(key, str(value))
+      console.print(table)
