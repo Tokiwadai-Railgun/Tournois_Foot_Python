@@ -85,7 +85,7 @@ def displayRank():
     table.add_column(column)
   calculatePoints() 
 
-  # Now we calculate the rank of each teams
+  # Now we calculate the rALTER TABLE equipe ALTER COLUMN pronosticVote SET DEFAULT 0oank of each teams
   with mysql.connector.connect(**connexion_params) as db:
     with db.cursor() as c:
       c.execute("SELECT name, nb_points FROM equipe")
@@ -144,10 +144,10 @@ def displayProno():
 
   with mysql.connector.connect(**connexion_params) as db:
     with db.cursor() as c:
-      c.execute("SELECT name, teamRank from equipe")
+      c.execute("SELECT name, pronosticVote from equipe")
       teamsRanks = c.fetchall()
       # get all in a single array instead of tuple
-      donnees_tries = dict(sorted(teamsRanks, key=lambda item: item[1]))
+      donnees_tries = dict(sorted(teamsRanks, key=lambda item: item[1], reverse=True))
       print(donnees_tries)
       for key, value in donnees_tries.items():
           table.add_row(key, str(value))

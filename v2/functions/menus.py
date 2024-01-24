@@ -106,11 +106,6 @@ def addTeam() :
             "message" : "d'ou viens l'équipe",
             "name" : "teamCity"
         },
-        {
-            "type" : "input",
-            "message" : "combien de points a l'équipe ?",
-            "name" : "teamRank"
-        },
     ]
 
     answer = prompt(questions)
@@ -130,7 +125,7 @@ def addTeam() :
         teamName = teamValues[0]
         teamCity = teamValues[1]
         teamScore = teamValues[2]
-        req = f"""INSERT INTO equipe (name, ville, nb_points) VALUES ('{teamName}', '{teamCity}', '{teamScore}')"""
+        req = f"""INSERT INTO equipe (name, ville) VALUES ('{teamName}', '{teamCity}')"""
         print(teamValues)
         c.execute(req)
         db.commit()
@@ -140,43 +135,67 @@ def addTeam() :
 
 
 def editTeam(): 
-    # Ask for user input and stock it in a dictionnary
-    newTeam = {
-        "teamName": "",
-        "teamMembers": [],
-        "teamRank": "",
-        "teamLastMatch": "",
-        "teamNextMatch": ""
+  # Ask for user input and stock it in a dictionnary
+  newTeam = {
+      "teamName": "",
+      "teamMembers": [],
+      "teamRank": "",
+      "teamLastMatch": "",
+      "teamNextMatch": ""
+  }
+  print("Modification d'une équipe")
+  # First get all teams names
+  with mysql.connector.connect(**connexion_params) as db:
+    with db.cursor() as c:
+      c.execute("SELECT name from equipe")
+      teams = c.fetchall()
+
+      teamsNames = []
+      for team in teams:
+        teamsNames.append(team[0])
+  teamSelectionQuestions = [
+    {
+      "type": "fuzzy",
+      "message" : "Sélectionner une équipe",
+      "choices": teamsNames,
+    },
+  ]
+  modifierQuestions = [
+    {
+      "type": "input",
+      "message": "Quel est le nom de l'équipe ? (laisser vide si inchangé)",
+      "name": "name"
+    },
+    {
+      "type" : "input",
+      "message" : "D'où viens l'équipe ? (laisser vide si inchangé)",
+      "name" : "ville"
     }
-    print("Modification d'une équipe")
-    questions = [
-        {
-            "type": "input",
-            "message": "Quel est le nom de l'équipe ?",
-            "name": "teamName"
-        },
-        {
-            "type" : "input",
-            "message" : "Quel est le rang de l'équipe ? [\"disc\" si discalifiée]",
-            "name" : "teamRank"
-        },
-        {
-            "type" : "input",
-            "message" : "Quand a été le dernier match de l'équipe ? (JJ/MM/AAAA)",
-            "name" : "teamLastMatch"
-        }, 
-        {
-            "type": "input",
-            "message": "Quand sera le prochain match de l'équipe ? (JJ/MM/AAAA ) [\"none\" si aucun]",
-            "name": "teamNextMatch"
-        }
-    ]
-    answer = prompt(questions)
-    for key, value in answer.items():
-        newTeam[key] = value
-    print("L'équipe a bien été modifiée !")
-    # TODO: Faire une fonction permettant de modifier une équipe dans un fichier JSON
-    teamsActionMenu()
+  ]
+
+  choosenTeam = prompt(teamSelectionQuestions)
+
+  print(choosenTeam)
+  selectedTeamName = choosenTeam[0]
+  modifications = prompt(modifierQuestions)
+  # First we check each response and set the correct values 
+  with mysql.connector.connect(**connexion_params) as db :
+    with db.cursor() as c:
+
+      for key, value in modifications.items():
+        if value == "" : 
+          c.execute(f"SELECT {key} FROM equipe WHERE name = '{selectedTeamName}'") 
+          value = c.fetchall()[0][0]
+
+
+      # Then we push to the database
+      c.execute(f"UPDATE equipe SET name = '{modifications['name']}', ville = '{modifications['ville']}' WHERE name ='{selectedTeamName}'")
+      db.commit()
+
+  # Now we upate the database  
+  print("L'équipe a bien été modifiée !")
+  # TODO: Faire une fonction permettant de modifier une équipe dans un fichier JSON
+  teamsActionMenu()
 
 def deleteTeam():
     # Ask for user input and stock it in a dictionnary
