@@ -8,9 +8,9 @@ import random
 # Database import
 import mysql.connector
 connexion_params = {
-  'host': "localhost",
-  'user': "root",
-  'password': "Walendithas",
+  'host': "85.215.156.4",
+  'user': "tortue",
+  'password': "tkt",
   'database': "tournoi"
 }
 

@@ -1,11 +1,16 @@
 # Planification saison foot
 
+
+## Installation : 
+Simplement clone et ajouter les différentes bibliothèqes
+concernant la basse de donnée elle est hébergée sur un VPS il n'y a donc pas besoin de la cloner
+
 **Application Shell (CLI)**
 
 ## Plugins utilisés
 1 - InquirerPy(https://pypi.org/project/inquirerpy/) : pour les menus et les questions
 2 - rich (https://pypi.org/project/rich/) : pour l'affichage des tableaux \
-2 - json pour stocker les données dans des fichiers et les partager entre les fonctions
+2 - mysql-connector-python : pour la connection avec la base de donnée 
 
 ## Fonctionnalités
 Le programme permet de créer un planpour les matchs de foots à venir.
