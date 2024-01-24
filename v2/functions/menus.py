@@ -94,7 +94,6 @@ def teamsActionMenu():
 
 def addTeam() : 
     # Ask for user input and stock it in a dictionnary
-    print("Ajout d'une équipe")
     questions = [
         {
             "type": "input",
@@ -126,7 +125,6 @@ def addTeam() :
         teamCity = teamValues[1]
         teamScore = teamValues[2]
         req = f"""INSERT INTO equipe (name, ville) VALUES ('{teamName}', '{teamCity}')"""
-        print(teamValues)
         c.execute(req)
         db.commit()
     print("L'équipe a bien été ajoutée !")
@@ -175,7 +173,6 @@ def editTeam():
 
   choosenTeam = prompt(teamSelectionQuestions)
 
-  print(choosenTeam)
   selectedTeamName = choosenTeam[0]
   modifications = prompt(modifierQuestions)
   # First we check each response and set the correct values 
@@ -411,38 +408,35 @@ def pronoMenu():
         exit()
 
 def vote():
+  with mysql.connector.connect(**connexion_params) as db:
+    with db.cursor() as c:
+      c.execute("SELECT name FROM equipe;")
 
-  with open("datas/teams.json", 'r') as teamsJson:
-    teams_json_object = json.load(teamsJson)
+      teamsIds = []
+      for team in c.fetchall():
+        teamsIds.append(team[0])
 
-    teamsIds = []
-    for key, _ in teams_json_object.items():
-      teamsIds.append(key)
+      questions = [
+        {
+          "type": "fuzzy",
+          "message" : "Sélectionner la première équipe",
+          "choices": teamsIds 
+        },
+        {
+          "type": "fuzzy",
+          "message" : "Sélectionner la deuxième équipe",
+          "choices": teamsIds 
+        },
+        {
+          "type": "fuzzy",
+          "message" : "Sélectionner la troisième équipe",
+          "choices": teamsIds 
+        },
+      ]
 
-    questions = [
-      {
-        "type": "fuzzy",
-        "message" : "Sélectionner la première équipe",
-        "choices": teamsIds 
-      },
-      {
-        "type": "fuzzy",
-        "message" : "Sélectionner la deuxième équipe",
-        "choices": teamsIds 
-      },
-      {
-        "type": "fuzzy",
-        "message" : "Sélectionner la troisième équipe",
-        "choices": teamsIds 
-      },
-    ]
-
-    votedTeams = prompt(questions)
-
-    for _, value in votedTeams.items():
-      teams_json_object[value][3] = str(int(teams_json_object[value][3]) + 1)
-
-    with open("datas/teams.json", "w") as teamsWrittingJson:
-      json.dump(teams_json_object, teamsWrittingJson)
+      votedTeams = prompt(questions)
+      for _, team in votedTeams.items():
+        c.execute(f"UPDATE equipe SET pronosticVote = pronosticVote + 1 WHERE name = '{team}'")
+      db.commit()
 
   pronoMenu()
