@@ -76,7 +76,7 @@ def teamsActionMenu():
             addTeam()
             # Créer une fonction pour ajouter une équipe dans un fichier JSON
         case "Modifier une équipe":
-            print("Modification d'une équipe")
+          editTeam()
             # Créer une fonction pour modifier une équipe dans un fichier JSON
         case "Changer de Menu" :
             navigationMenu()
