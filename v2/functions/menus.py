@@ -324,50 +324,45 @@ def addMatch():
 def editMatchScore():
   # Prompt the user to choose a match with it ID
   matchsIds = []
-  with open("datas/matchs.json", 'r') as matchJson:
-    matchs = json.load(matchJson)
-    for key, value in matchs.items() :
-      matchsIds.append(key) # On ajoute l'Id du match dans la table pour les afficher par la suite
+  with mysql.connector.connect(**connexion_params) as db:
+    with db.cursor() as c:
+      c.execute("SELECT idMatch FROM matchs")
+      for match in c.fetchall():
+        matchsIds.append(match[0]) # On ajoute l'Id du match dans la table pour les afficher par la suite
 
+      
+      questions = [
+        {
+          "type": "fuzzy",
+          "message" : "Sélectionner un match",
+          "choices": matchsIds 
+        }
+      ]
 
-  questions = [
-    {
-      "type": "fuzzy",
-      "message" : "Sélectionner un match",
-      "choices": matchsIds 
-    }
-  ]
+      editingMatch = prompt(questions)[0]
 
-  editingMatch = prompt(questions)
+      # Now we prompt the score of the two new teams
+      scoreQuestions = [
+        {
+            "type" : "number",
+            "message" : "Quel est le score de la première équipe ?",
+            "min_allowed": 0,
+            "validate": EmptyInputValidator(),
+            "name" : "score1"
+        }, 
+        {
+            "type" : "number",
+            "message" : "Quel est le score de la seconde équipe ?",
+            "min_allowed": 0,
+            "validate": EmptyInputValidator(),
+            "name" : "score2"
+        }, 
+      ]
+      newScore = prompt(scoreQuestions)
 
-  # Now we prompt the score of the two new teams
-  scoreQuestions = [
-    {
-        "type" : "number",
-        "message" : "Quel est le score de la première équipe ?",
-        "min_allowed": 0,
-        "validate": EmptyInputValidator(),
-        "name" : "score1"
-    }, 
-    {
-        "type" : "number",
-        "message" : "Quel est le score de la seconde équipe ?",
-        "min_allowed": 0,
-        "validate": EmptyInputValidator(),
-        "name" : "score2"
-    }, 
-  ]
-  newScore = prompt(scoreQuestions)
+      c.execute(f"UPDATE matchs SET score1 = {newScore['score1']}, score2 = {newScore['score2']} WHERE idMatch = {editingMatch};")
+      db.commit()
 
-  newMatchHistory = {}
-  for key, value in newScore.items():
-    with open("datas/matchs.json", 'r') as matchJson:
-      newMatchHistory = json.load(matchJson)
-      newMatchHistory[editingMatch[0]][3] = newScore["score1"]
-      newMatchHistory[editingMatch[0]][4] = newScore["score2"]
-
-    with open("datas/matchs.json", 'w') as matchJson:
-      json.dump(newMatchHistory, matchJson)
 
   matchHistoryMenu()
 
