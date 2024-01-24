@@ -151,4 +151,4 @@ def displayProno():
       print(donnees_tries)
       for key, value in donnees_tries.items():
           table.add_row(key, str(value))
-      console.print(table)
+  console.print(table)

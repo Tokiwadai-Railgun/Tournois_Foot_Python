@@ -238,47 +238,72 @@ def matchHistoryMenu():
           exit()
 
 def addMatch():
-  print("Ajout d'une équipe")
-  questions = [
-      {
-          "type": "number",
-          "message": "Quel est l'id de la première équipe ?",
-          "name": "teamName1"
-      },
-      {
-          "type" : "number",
-          "message" : "Quel est l'id de la deuxième équipe",
-          "name" : "teamName2"
-      },
-      {
+  with mysql.connector.connect(**connexion_params) as db :
+    with db.cursor() as c:
+      c.execute("SELECT name FROM equipe")
+      teamNames = [] 
+      for team in c.fetchall():
+        teamNames.append(team[0])
+
+      arbitresNames = []
+      c.execute("SELECT nom FROM arbitre")
+      for arbitre in c.fetchall():
+        arbitresNames.append(arbitre[0])
+
+      questions = [
+        {
+          "type": "fuzzy",
+          "message": "Quel est le nom la première équipe ?",
+          "name": "teamName1",
+          "choices": teamNames
+        },
+        {
+          "type" : "fuzzy",
+          "message" : "Quel est le nom de la deuxième équipe",
+          "name" : "teamName2",
+          "choices": teamNames
+        },
+        {
           "type" : "input",
-          "message" : "Quand a lieu de match ?",
-          "name" : "matchDate"
-      }, 
-      {
+            "message" : "Quand a lieu de match ?",
+            "name" : "matchDate"
+        }, 
+        {
           "type" : "number",
           "message" : "Quel est le score de la première équipe ?",
           "min_allowed": 0,
           "validate": EmptyInputValidator(),
           "name" : "score1"
-      }, 
-      {
+        }, 
+        {
           "type" : "number",
           "message" : "Quel est le score de la deuxième équipe ?",
           "min_allowed": 0,
           "validate": EmptyInputValidator(),
           "name" : "score2"
-      }, 
-      {
-          "type" : "input",
+        }, 
+        {
+          "type" : "fuzzy",
           "message" : "Quel est le nom de l'arbitre ?",
-          "name" : "arbitre"
-      }, 
+          "name" : "arbitre",
+          "choices": arbitresNames
+        }, 
+      ]
+
+      answer = prompt(questions)
       
+      # First we need to get the two teams IDs 
+      c.execute(f"SELECT idEqp FROM equipe WHERE name = '{answer['teamName1']}'")
+      firstTeamId = c.fetchall()[0][0]
+      c.execute(f"SELECT idEqp FROM equipe WHERE name = '{answer['teamName2']}'")
+      secondTeamId = c.fetchall()[0][0]
+      c.execute(f"SELECT idArb FROM arbitre WHERE nom = '{answer['arbitre']}'")
+      arbitreId = c.fetchall()[0][0]
 
-  ]
+      c.execute(f"INSERT INTO matchs (idEqp1, idEqp2, dateMatch, score1, score2, arbitre) VALUES ('{firstTeamId}', '{secondTeamId}', '{answer['matchDate']}', '{answer['score1']}', '{answer['score2']}', '{arbitreId}')")
+      db.commit()
 
-  answer = prompt(questions)
+  
 
   with open("datas/matchs.json", 'r') as outfile:
     matchs = json.load(outfile)
